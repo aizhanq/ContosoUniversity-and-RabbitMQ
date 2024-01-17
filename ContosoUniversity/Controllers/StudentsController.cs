@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Text;
+using RabbitMQ.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,11 +9,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 
 namespace ContosoUniversity.Controllers
 {
     public class StudentsController : Controller
     {
+
         private readonly SchoolContext _context;
 
         public StudentsController(SchoolContext context)
@@ -60,6 +64,26 @@ namespace ContosoUniversity.Controllers
             {
                 _context.Add(student);
                 await _context.SaveChangesAsync();
+
+                // Отправка сообщения в RabbitMQ о сохранении студента
+                var factory = new ConnectionFactory { HostName = "localhost" };
+                using var connection = factory.CreateConnection();
+                using var channel = connection.CreateModel();
+
+                channel.QueueDeclare(queue: "added",
+                                     durable: false,
+                                     exclusive: false,
+                                     autoDelete: false,
+                                     arguments: null);
+
+                string message = "Student " + student.FirstMidName + " " + student.LastName + " was added";
+                var body = Encoding.UTF8.GetBytes(message);
+
+                channel.BasicPublish(exchange: string.Empty,
+                     routingKey: "added",
+                     basicProperties: null,
+                     body: body);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(student);
