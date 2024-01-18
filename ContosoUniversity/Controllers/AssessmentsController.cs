@@ -19,7 +19,6 @@ namespace ContosoUniversity.Controllers
             _context = context;
         }
 
-        // GET: Assessments
         public async Task<IActionResult> Index()
         {
             var schoolContext = _context.Assessments.Include(a => a.Student);
@@ -43,7 +42,6 @@ namespace ContosoUniversity.Controllers
         //    return View(assessments);
         //}
 
-        // GET: Assessments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -62,16 +60,12 @@ namespace ContosoUniversity.Controllers
             return View(assessment);
         }
 
-        // GET: Assessments/Create
         public IActionResult Create()
         {
             ViewData["StudentID"] = new SelectList(_context.Students, "ID", "ID");
             return View();
         }
 
-        // POST: Assessments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AssessmentId,Date,AssessmentNumber,StudentID")] Assessment assessment)
@@ -86,7 +80,6 @@ namespace ContosoUniversity.Controllers
             return View(assessment);
         }
 
-        // GET: Assessments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -103,9 +96,6 @@ namespace ContosoUniversity.Controllers
             return View(assessment);
         }
 
-        // POST: Assessments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AssessmentId,Date,AssessmentNumber,StudentID")] Assessment assessment)
@@ -139,7 +129,6 @@ namespace ContosoUniversity.Controllers
             return View(assessment);
         }
 
-        // GET: Assessments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -158,7 +147,6 @@ namespace ContosoUniversity.Controllers
             return View(assessment);
         }
 
-        // POST: Assessments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
