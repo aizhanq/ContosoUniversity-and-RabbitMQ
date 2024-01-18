@@ -76,7 +76,7 @@ namespace ContosoUniversity.Controllers
                                      autoDelete: false,
                                      arguments: null);
 
-                string message = "Student " + student.FirstMidName + " " + student.LastName + " was added";
+                string message = "Student " + student.LastName + " " + student.FirstMidName + " was added";
                 var body = Encoding.UTF8.GetBytes(message);
 
                 channel.BasicPublish(exchange: string.Empty,

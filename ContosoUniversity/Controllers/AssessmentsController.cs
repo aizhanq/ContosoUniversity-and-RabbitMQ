@@ -19,28 +19,28 @@ namespace ContosoUniversity.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var schoolContext = _context.Assessments.Include(a => a.Student);
-            return View(await schoolContext.ToListAsync());
-        }
-
-        //public async Task<IActionResult> Index(int? id)
+        //public async Task<IActionResult> Index()
         //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var assessments = await _context.Assessments
-        //        .Where(a => a.StudentID == id)
-        //        .ToListAsync();
-
-        //    var student = await _context.Students.FindAsync(id);
-        //    ViewBag.studentName = student.FirstMidName + " " + student.LastName;
-        //    ViewBag.studentId = student.ID;
-
-        //    return View(assessments);
+        //    var schoolContext = _context.Assessments.Include(a => a.Student);
+        //    return View(await schoolContext.ToListAsync());
         //}
+
+        public async Task<IActionResult> Index(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var assessments = await _context.Assessments
+                .Where(a => a.StudentID == id)
+                .ToListAsync();
+
+            var student = await _context.Students.FindAsync(id);
+            ViewBag.studentName = student.LastName + " " + student.FirstMidName;
+            ViewBag.id = student.ID;
+
+            return View(assessments);
+        }
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -60,9 +60,10 @@ namespace ContosoUniversity.Controllers
             return View(assessment);
         }
 
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
             ViewData["StudentID"] = new SelectList(_context.Students, "ID", "ID");
+            ViewBag.id = id;
             return View();
         }
 
@@ -74,7 +75,7 @@ namespace ContosoUniversity.Controllers
             {
                 _context.Add(assessment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Assessments", new { id = assessment.StudentID });
             }
             ViewData["StudentID"] = new SelectList(_context.Students, "ID", "ID", assessment.StudentID);
             return View(assessment);
@@ -123,7 +124,7 @@ namespace ContosoUniversity.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Assessments", new {id = assessment.StudentID});
             }
             ViewData["StudentID"] = new SelectList(_context.Students, "ID", "ID", assessment.StudentID);
             return View(assessment);
@@ -154,7 +155,7 @@ namespace ContosoUniversity.Controllers
             var assessment = await _context.Assessments.FindAsync(id);
             _context.Assessments.Remove(assessment);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Assessments", new { id = assessment.StudentID });
         }
 
         private bool AssessmentExists(int id)
