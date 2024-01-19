@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ContosoUniversity.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ContosoUniversity
 {
@@ -27,6 +29,9 @@ namespace ContosoUniversity
         {
             services.AddDbContext<SchoolContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<User, IdentityRole>()
+                   .AddEntityFrameworkStores<SchoolContext>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -51,6 +56,7 @@ namespace ContosoUniversity
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
