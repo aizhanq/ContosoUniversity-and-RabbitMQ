@@ -62,7 +62,6 @@ namespace ContosoUniversity.Controllers
 
         public IActionResult Create(int? id)
         {
-            ViewData["StudentID"] = new SelectList(_context.Students, "ID", "ID");
             ViewBag.id = id;
             return View();
         }
@@ -93,7 +92,7 @@ namespace ContosoUniversity.Controllers
             {
                 return NotFound();
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "ID", "ID", assessment.StudentID);
+            ViewBag.id = assessment.StudentID;
             return View(assessment);
         }
 

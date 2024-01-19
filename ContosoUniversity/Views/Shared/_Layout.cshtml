@@ -37,6 +37,19 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">Departments</a>
                         </li>
                     </ul>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <p>@User.Identity.Name &nbsp</p>
+
+                        <form method="post" asp-controller="Account" asp-action="Logout">
+                            <input type="submit" value="Выход" />
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login">Вход &nbsp</a>
+                        <a asp-controller="Account" asp-action="Register">Регистрация</a>
+                    }
                 </div>
             </div>
         </nav>
