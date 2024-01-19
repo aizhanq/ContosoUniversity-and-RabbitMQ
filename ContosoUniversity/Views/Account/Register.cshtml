@@ -1,5 +1,5 @@
 ﻿@model ContosoUniversity.ViewModels.RegisterViewModel
-<h2>Регистрация нового пользователя</h2>
+<h2>Registration</h2>
 <form method="post" asp-controller="Account" asp-action="Register">
     <div asp-validation-summary="ModelOnly"></div>
     <div>
@@ -8,21 +8,21 @@
         <span asp-validation-for="Email"></span>
     </div>
     <div>
-        <label asp-for="Year"></label><br />
+        <label asp-for="Year">Birth Year</label><br />
         <input asp-for="Year" />
         <span asp-validation-for="Year"></span>
     </div>
     <div>
-        <label asp-for="Password"></label><br />
+        <label asp-for="Password">Password</label><br />
         <input asp-for="Password" />
         <span asp-validation-for="Password"></span>
     </div>
     <div>
-        <label asp-for="PasswordConfirm"></label><br />
+        <label asp-for="PasswordConfirm">Password Confirm</label><br />
         <input asp-for="PasswordConfirm" />
         <span asp-validation-for="PasswordConfirm"></span>
     </div>
     <div>
-        <input type="submit" value="Регистрация" />
+        <input type="submit" value="Registration" />
     </div>
 </form>
