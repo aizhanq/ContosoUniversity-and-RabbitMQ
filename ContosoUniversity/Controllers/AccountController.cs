@@ -1,7 +1,9 @@
-﻿using ContosoUniversity.Models;
+﻿using ContosoUniversity.Data;
+using ContosoUniversity.Models;
 using ContosoUniversity.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace ContosoUniversity.Controllers
@@ -9,12 +11,16 @@ namespace ContosoUniversity.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly SchoolContext _schoolContext;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, SchoolContext schoolContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
+            _schoolContext = schoolContext;
         }
 
         [HttpGet]
@@ -60,10 +66,19 @@ namespace ContosoUniversity.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _schoolContext.Users.SingleOrDefaultAsync(x => x.Email == model.Email);
+
+                if (user == null) { }
+
                 var result =
                     await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {                  
+                    if (await _userManager.IsInRoleAsync(user, "admin"))
+                    {
+                        _signInManager.SignInWithClaimsAsync();
+                    }
+
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);
